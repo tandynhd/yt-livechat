@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fake Chat</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      #chat-container {
+        width: 70%;
+        min-width: 300px; /* Set a minimum width */
+        max-width: 800px; /* Set a maximum width */
+        height: 50vh;
+        padding: 20vh;
+        background-color: #00ff00; /* Green color for the canvas */
+        overflow-y: hidden; /* Enable vertical scrollbar */
+        display: flex;
+        flex-direction: column-reverse; /* Display chat messages from bottom to top */
+        font-family: Arial, sans-serif;
+        color: #ffffff; /* White text color */
+      }
+
+      .message {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        max-width: 100%;
+        word-wrap: break-word;
+        background-color: #333; /* Dark background color for messages */
+      }
+
+      #slider-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .slider-label {
+        flex-grow: 1;
+      }
+
+      .slider {
+        width: 50%;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="slider-container">
+      <div class="slider-label">
+        <label for="message-slider">Number of Chats:</label>
+        <input type="range" id="message-slider" min="1" max="10" value="5" />
+      </div>
+      <div class="slider-label">
+        <label for="speed-slider">Chat Speed:</label>
+        <input
+          type="range"
+          id="speed-slider"
+          min="100"
+          max="5000"
+          value="4500"
+        />
+      </div>
+    </div>
+
+    <div id="chat-container"></div>
+
+    <script>
+      const chatContainer = document.getElementById("chat-container");
+      const messageSlider = document.getElementById("message-slider");
+      const speedSlider = document.getElementById("speed-slider");
+      const fakeNames = {{ fake_names|tojson|safe }};
+      const fakeChats = {{ fake_chats|tojson|safe }};
+
+      // Function to add messages to the chat container
+      function addMessage(name, message) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+        messageElement.textContent = `${name}: ${message}`;
+
+        // Insert the new message at the end of the container
+        chatContainer.appendChild(messageElement);
+
+        // Remove excess messages to keep only the latest messages based on the slider value
+        while (chatContainer.children.length > messageSlider.value) {
+          chatContainer.removeChild(chatContainer.children[0]);
+        }
+
+        // Scroll to the bottom to show the latest messages
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Function to get a random subset of messages
+      function getRandomMessages(messages, count) {
+        const shuffled = messages.slice().sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+      }
+
+      // Simulate chat scrolling by adding messages at intervals
+      function simulateChat() {
+        let index = 0;
+
+        function addNextMessages() {
+          const randomMessages = getRandomMessages(fakeChats, messageSlider.value);
+          const randomName =
+            fakeNames[Math.floor(Math.random() * fakeNames.length)];
+
+          randomMessages.forEach((message) => {
+            addMessage(randomName, message);
+          });
+
+          setTimeout(addNextMessages, (5000-speedSlider.value)); // Adjust the interval based on the speed slider
+          // console.log(speedSlider.value)
+        }
+
+        addNextMessages();
+      }
+
+      // Update the chat when the slider values change
+      messageSlider.addEventListener("input", () => {
+        chatContainer.innerHTML = ""; // Clear existing messages
+        simulateChat();
+      });
+
+      speedSlider.addEventListener("input", () => {
+        chatContainer.innerHTML = ""; // Clear existing messages
+        simulateChat();
+      });
+
+      // Start simulating the chat when the page loads
+      window.onload = simulateChat;
+    </script>
+  </body>
+</html>
