@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+}
+
+#chat-container {
+  width: 70%;
+  min-width: 300px;
+  max-width: 800px;
+  height: 50vh;
+  padding: 20vh;
+  background-color: #00ff00;
+  overflow-y: auto; /* Change to 'auto' for vertical scroll if needed */
+  display: flex;
+  flex-direction: column-reverse;
+  color: #ffffff;
+}
+
+.message {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  max-width: 80%; /* Adjust the max-width to your preference */
+  word-wrap: break-word;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.message img {
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.message-text {
+  color: #ffffff;
+}
+
+.message-name {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.message-content {
+  flex-grow: 1;
+}
+
+#slider-container {
+  width: 50%; /* Adjust the width to your preference */
+  margin-top: auto; /* Push the slider to the bottom of the chat container */
+  display: flex;
+  align-items: center;
+}
+
+.slider-label {
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.slider {
+  width: 50%;
+}
